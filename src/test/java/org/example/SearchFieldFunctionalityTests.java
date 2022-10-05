@@ -37,9 +37,8 @@ public class SearchFieldFunctionalityTests {
     @Test
     public void searchResultsIncorrectInformation(){
 
-        searchField.sendKeys("a,smnfkjehriirjkjfnkjcnk90039034854tuihdfkjdfjnknjse!!@#$%^&(*&^%$#@#$%^&*^%$#@kflnvmoashgsdkjfnlkejnskld");
-        searchField.sendKeys(Keys.ENTER);
-
+        searchField.sendKeys("a,smnfkjehriirjkjfnkjcnk90039034854tuihdfkjdfjnknjse!!@#$%^&(*&^%$#@#$%^&*^%$#@kflnvmoashgsdkjfnlkejnskld"
+                             + Keys.ENTER);
         WebElement noResultsMessage = new WebDriverWait(driver, Duration.ofSeconds(10))
                 .until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[text()='No results for ']")));
         Assert.assertEquals(noResultsMessage.getText(),"No results for",
@@ -48,8 +47,8 @@ public class SearchFieldFunctionalityTests {
 
     @Test
     public void checkResultsForMessage(){
-        searchField.sendKeys("laptop");
-        searchField.sendKeys(Keys.ENTER);
+        searchField.sendKeys("laptop"
+                             +Keys.ENTER);
         WebElement resultsForMessage = new WebDriverWait(driver, Duration.ofSeconds(10))
                 .until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//span[text()='\"laptop\"']")));
         Assert.assertEquals(resultsForMessage.getText(),"\"laptop\"",
@@ -58,8 +57,8 @@ public class SearchFieldFunctionalityTests {
 
     @Test
     public void checkResultsList(){
-        searchField.sendKeys("laptop");
-        searchField.sendKeys(Keys.ENTER);
+        searchField.sendKeys("laptop"
+                        +Keys.ENTER);
         List<WebElement> searchResults = new WebDriverWait(driver, Duration.ofSeconds(10))
                 .until(ExpectedConditions.visibilityOfAllElementsLocatedBy(By.className("a-size-medium")));
         boolean foundResult=false;
