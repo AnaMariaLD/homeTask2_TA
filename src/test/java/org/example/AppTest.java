@@ -16,7 +16,7 @@ import java.util.Random;
 public class AppTest {
 
     private WebDriver webDriver;
-    private final int ELEMENT_IN_CART = 2;
+    private final int ELEMENT_IN_CART = 1;
 
     @BeforeTest
     public void setUpDriver() {
@@ -32,12 +32,12 @@ public class AppTest {
     @DataProvider(name = "Categories")
     public Object[][] categoriesOnAmazonHomePage(){
         return new Object[][]{
-                {"Keyboards"}, {"Chairs"}, {"Headsets"}
+                {"Keyboards"}
         };
     }
 
     @Test(dataProvider = "Categories")
-    public void addMultipleElementToCart(String category) throws InterruptedException {
+    public void addMultipleElementToCart(String category) {
         for(int i = 0; i < ELEMENT_IN_CART; i++){
             openCategory(category);
             addOneRandomElementToCartFromCategory();
@@ -46,27 +46,38 @@ public class AppTest {
 
     }
 
+    @Test(dataProvider = "Categories")
+    public void emptyCartWithItems(String category) {
+        addMultipleElementToCart(category);
+        removeEelementFromCart();
+    }
 
-    @Test
     public void addOneRandomElementToCartFromCategory(){
         int random = new Random().nextInt(25)+2;
-        WebElement productFromList = new WebDriverWait(webDriver, Duration.ofSeconds(10)).until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"search\"]/div[1]/div[1]/div/span[3]/div[2]/div["+random+"]/div/div/div")));
-        productFromList.findElement(By.tagName("a")).click();
+        WebElement productFromList = new WebDriverWait(webDriver, Duration.ofSeconds(5)).until(ExpectedConditions.visibilityOfElementLocated(By.xpath("(//*[@class=\"a-link-normal s-no-outline\"])["+random+"]")));
+        productFromList.click();
 
-        try {
-            WebElement addToCart = new WebDriverWait(webDriver, Duration.ofSeconds(10)).until(ExpectedConditions.visibilityOfElementLocated(By.name("submit.add-to-cart")));
-            addToCart.click();
-        } catch (NoSuchElementException e){
-            throw new NoSuchElementException("NO SUCH ELEMENT");
-        }
+        WebElement addToCart = new WebDriverWait(webDriver, Duration.ofSeconds(10)).until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"add-to-cart-button\"]")));
+        addToCart.click();
 
         Boolean afterAddedToCart = new WebDriverWait(webDriver, Duration.ofSeconds(10)).until(ExpectedConditions.titleIs("Amazon.com Shopping Cart"));
         Assert.assertEquals(afterAddedToCart,true);
+    }
+
+    //TODO to improve, to remove all element element
+    public void removeEelementFromCart() {
+        openCartFromNavBar();
+            WebElement deleteButton = webDriver.findElement(By.xpath("//input[@value=\"Delete\"]"));
+
+            while (deleteButton.isDisplayed()){
+                deleteButton.click();
+                deleteButton = webDriver.findElement(By.xpath("//input[@value=\"Delete\"]"));
+            }
 
     }
 
     public void openCartFromNavBar() {
-        WebElement cart = webDriver.findElement(By.id("nav-cart"));
+        WebElement cart = new WebDriverWait(webDriver,Duration.ofSeconds(10)).until(ExpectedConditions.visibilityOfElementLocated(By.id("nav-cart")));
         cart.click();
     }
 
@@ -96,10 +107,6 @@ public class AppTest {
         homePage.click();
     }
 
-    public void backButton(){
-        //WebElement backbutton = new WebDriverWait(webDriver, Duration.ofSeconds(10)).until(ExpectedConditions.visibilityOfElementLocated(By.id("nav-logo-sprites")));
-        webDriver.navigate().back();
-    }
 
     @AfterTest
     public void closeDriver() {
