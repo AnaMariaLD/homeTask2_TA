@@ -43,17 +43,16 @@ public class CartTest {
             addOneRandomElementToCartFromCategory();
             returnToAmazonHomePage();
         }
-
     }
 
     @Test(dataProvider = "Categories")
     public void emptyCartWithItems(String category) {
         addMultipleElementToCart(category);
-        removeEelementFromCart();
+        removeAllElementsFromCart();
     }
 
     public void addOneRandomElementToCartFromCategory(){
-        int random = new Random().nextInt(25)+2;
+        int random = new Random().nextInt(25) + 2;
         WebElement productFromList = new WebDriverWait(webDriver, Duration.ofSeconds(5)).until(ExpectedConditions.visibilityOfElementLocated(By.xpath("(//*[@class=\"a-link-normal s-no-outline\"])["+random+"]")));
         productFromList.click();
 
@@ -65,15 +64,14 @@ public class CartTest {
     }
 
     //TODO to improve, to remove all element element
-    public void removeEelementFromCart() {
+    public void removeAllElementsFromCart() {
         openCartFromNavBar();
-            WebElement deleteButton = webDriver.findElement(By.xpath("//input[@value=\"Delete\"]"));
+            WebElement deleteButton = webDriver.findElement(By.xpath("//input[@value='Delete']"));
 
             while (deleteButton.isDisplayed()){
                 deleteButton.click();
-                deleteButton = webDriver.findElement(By.xpath("//input[@value=\"Delete\"]"));
+                deleteButton = webDriver.findElement(By.xpath("//input[@value='Delete']"));
             }
-
     }
 
     public void openCartFromNavBar() {
@@ -95,7 +93,6 @@ public class CartTest {
             throw new NoSuchElementException("NO SUCH ELEMENT");
         }
         categoryElement.click();
-
     }
 
     public void setupAmazon(){
@@ -106,7 +103,6 @@ public class CartTest {
         WebElement homePage = new WebDriverWait(webDriver, Duration.ofSeconds(10)).until(ExpectedConditions.visibilityOfElementLocated(By.id("nav-logo-sprites")));
         homePage.click();
     }
-
 
     @AfterTest
     public void closeDriver() {

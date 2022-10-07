@@ -73,5 +73,4 @@ public class SearchFieldFunctionalityTests {
         }
         Assert.assertTrue(foundResult,"No results found containing searched text");
     }
-
 }
