@@ -12,12 +12,12 @@ public class BaseTests {
     public void setUp() {
         System.setProperty("webdriver.chrome.driver", "src/test/resources/webdriver/chromedriver.exe");
         driver = new ChromeDriver();
-        driver.get("http://www.amazon.com");
+        driver.get("https://www.amazon.com/");
         driver.manage().window().fullscreen();
     }
 
-    @AfterMethod
-    public void tearDown() {
-        driver.quit();
-    }
+//    @AfterMethod
+//    public void tearDown() {
+//        driver.quit();
+//    }
 }
