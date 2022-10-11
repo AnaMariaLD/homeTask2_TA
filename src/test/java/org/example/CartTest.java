@@ -13,7 +13,7 @@ import java.time.Duration;
 import java.util.NoSuchElementException;
 import java.util.Random;
 
-public class AddRemoveToCartTest {
+public class CartTest {
 
     private WebDriver webDriver;
     private final int ELEMENT_IN_CART = 1;
