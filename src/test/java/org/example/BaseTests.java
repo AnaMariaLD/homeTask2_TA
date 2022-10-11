@@ -16,8 +16,8 @@ public class BaseTests {
         driver.manage().window().fullscreen();
     }
 
-//    @AfterMethod
-//    public void tearDown() {
-//        driver.quit();
-//    }
+    @AfterMethod
+    public void tearDown() {
+        driver.quit();
+    }
 }

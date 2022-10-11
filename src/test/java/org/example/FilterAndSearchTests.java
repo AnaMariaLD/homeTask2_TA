@@ -4,14 +4,10 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
-import org.testng.Assert;
-import org.testng.annotations.IFactoryAnnotation;
 import org.testng.annotations.Test;
 
-import java.awt.font.FontRenderContext;
 import java.time.Duration;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -44,6 +40,7 @@ public class FilterAndSearchTests extends BaseTests {
     public void checkPriceRange() {
         final int min = 25;
         final int max = 35;
+
         WebElement category = driver.findElement(By.linkText("Keyboards"));
         category.click();
 
@@ -56,19 +53,29 @@ public class FilterAndSearchTests extends BaseTests {
         WebElement goButton = driver.findElement(By.xpath("//span[@class='a-button-inner']//input[@type='submit']"));
         goButton.click();
 
-        List<WebElement> pricesCheckRange = driver.findElements(By.xpath("//span[@class='a-price-whole']"));
-
+        List<WebElement> pricesCheckRange = driver.findElements(By.xpath("//span[not (contains(text(),'FREE')) and @class='a-color-base puis-light-weight-text' and contains(text(),'$')]"));
         List<Integer> priceCheck = new ArrayList<>();
+//        for (WebElement price : pricesCheckRange) {
+//            if(isNotEmptyString(price.getText()))
+//                priceCheck.add(Integer.valueOf(price.getText()));
+//        }
+        pricesCheckRange.stream().filter(price -> isNotEmptyString(price.getText())).forEach(price -> priceCheck.add(Integer.valueOf(price.getText())));
 
-        for (WebElement price : pricesCheckRange) {
-            priceCheck.add(Integer.valueOf(price.getText()));
-        }
-        for (int i = 0; i < priceCheck.size(); i++) {
-            if (priceCheck.get(i).intValue() != 0) {
-                assertTrue(priceCheck.get(i).intValue() > min && priceCheck.get(i).intValue() < max, " The filtered elements do not match the price range");
-            }
-        }
+//        for (Integer integer : priceCheck) {
+//            if (integer != 0) {
+//                assertTrue(checkNumberInRange(min, max, integer), " The filtered elements do not match the price range");
+//            }
+//        }
+        priceCheck.stream().filter(price -> price != 0).forEach(price -> checkNumberInRange(min, max, price));
+// mai mare/mic sau egal sau doar mai mare/mic ?
+    }
 
+    private static void checkNumberInRange(int min, int max, Integer integer) {
+        assertTrue(integer >= min && integer <= max, String.format("Value %s not in range.", integer));
+    }
+
+    private static boolean isNotEmptyString(String string) {
+        return !string.isEmpty();
     }
 }
 
