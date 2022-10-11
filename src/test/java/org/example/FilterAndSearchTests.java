@@ -53,7 +53,7 @@ public class FilterAndSearchTests extends BaseTests {
         WebElement goButton = driver.findElement(By.xpath("//span[@class='a-button-inner']//input[@type='submit']"));
         goButton.click();
 
-        List<WebElement> pricesCheckRange = driver.findElements(By.xpath("//span[not (contains(text(),'FREE')) and @class='a-color-base puis-light-weight-text' and contains(text(),'$')]"));
+        List<WebElement> pricesCheckRange = driver.findElements(By.xpath("//span[@class='a-price-whole']"));
         List<Integer> priceCheck = new ArrayList<>();
 //        for (WebElement price : pricesCheckRange) {
 //            if(isNotEmptyString(price.getText()))
@@ -67,7 +67,6 @@ public class FilterAndSearchTests extends BaseTests {
 //            }
 //        }
         priceCheck.stream().filter(price -> price != 0).forEach(price -> checkNumberInRange(min, max, price));
-// mai mare/mic sau egal sau doar mai mare/mic ?
     }
 
     private static void checkNumberInRange(int min, int max, Integer integer) {
