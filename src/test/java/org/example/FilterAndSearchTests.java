@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
 import static org.testng.Assert.assertTrue;
 
 public class FilterAndSearchTests extends BaseTests {
-
+    private static final int INDEX_TO_BE_REMOVED = 14;
     @Test
     public void checkBrandTitle() {
         WebElement category = driver.findElement(By.linkText("Computer mice"));
@@ -27,12 +27,12 @@ public class FilterAndSearchTests extends BaseTests {
         List<String> results = driver.findElements(By.xpath("//h2[contains(@class, 'a-size-mini')]/a/span"))
                 .stream()
                 .map(WebElement::getText)
-                .filter(string -> !string.isEmpty())
+                .filter(this::isNotEmptyString)
                 .collect(Collectors.toList());
         /**
          * result was of brand selected,but did not contain brand name in the title
          */
-        results.remove(14);
+        results.remove(INDEX_TO_BE_REMOVED);
         results.forEach(result -> assertTrue(result.contains(brandName), "Results did not all match the brand selected"));
     }
 
@@ -55,17 +55,8 @@ public class FilterAndSearchTests extends BaseTests {
 
         List<WebElement> pricesCheckRange = driver.findElements(By.xpath("//span[@class='a-price-whole']"));
         List<Integer> priceCheck = new ArrayList<>();
-//        for (WebElement price : pricesCheckRange) {
-//            if(isNotEmptyString(price.getText()))
-//                priceCheck.add(Integer.valueOf(price.getText()));
-//        }
         pricesCheckRange.stream().filter(price -> isNotEmptyString(price.getText())).forEach(price -> priceCheck.add(Integer.valueOf(price.getText())));
 
-//        for (Integer integer : priceCheck) {
-//            if (integer != 0) {
-//                assertTrue(checkNumberInRange(min, max, integer), " The filtered elements do not match the price range");
-//            }
-//        }
         priceCheck.stream().filter(price -> price != 0).forEach(price -> checkNumberInRange(min, max, price));
     }
 
@@ -73,7 +64,7 @@ public class FilterAndSearchTests extends BaseTests {
         assertTrue(integer >= min && integer <= max, String.format("Value %s not in range.", integer));
     }
 
-    private static boolean isNotEmptyString(String string) {
+    private boolean isNotEmptyString(String string) {
         return !string.isEmpty();
     }
 }
