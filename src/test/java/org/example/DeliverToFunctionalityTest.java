@@ -31,7 +31,7 @@ public class DeliverToFunctionalityTest {
     }
 
     @Test
-    public void deliverToValueUpdate() throws InterruptedException {
+    public void deliverToValueUpdate() {
 
         WebElement deliverToButton = webdriver.findElement(By.id("glow-ingress-block"));
         deliverToButton.click();
@@ -80,15 +80,15 @@ public class DeliverToFunctionalityTest {
         deliverShipOutsideUsButton.click();
         List<WebElement> countryList = (webdriver.findElements(By.xpath("//div[contains(@class, 'a-popover-wrapper')]//a[contains(@class, 'a-dropdown-link')]")));
         countryList.get(3).click();
-        WebElement deliverdoneButton = new WebDriverWait(webdriver, Duration.ofSeconds(30))
+        WebElement deliverDoneButton = new WebDriverWait(webdriver, Duration.ofSeconds(30))
                 .until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//span[@class='a-button a-button-primary']//span[@class='a-button-inner']")));
-        deliverdoneButton.click();
-        WebElement productcategory = new WebDriverWait(webdriver, Duration.ofSeconds(10))
+        deliverDoneButton.click();
+        WebElement productCategory = new WebDriverWait(webdriver, Duration.ofSeconds(10))
                 .until(ExpectedConditions.visibilityOfElementLocated(By.partialLinkText("Chairs")));
-        productcategory.click();
-        WebElement productselect = new WebDriverWait(webdriver, Duration.ofSeconds(30))
+        productCategory.click();
+        WebElement productSelect = new WebDriverWait(webdriver, Duration.ofSeconds(30))
                 .until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//div[@class='s-widget-container s-spacing-small s-widget-container-height-small celwidget slot=MAIN template=SEARCH_RESULTS widgetId=search-results_5']//div[@class='s-card-container s-overflow-hidden aok-relative puis-expand-height puis-include-content-margin s-latency-cf-section s-card-border']//div[@class='a-section a-spacing-base']//div[@class='a-section a-spacing-micro puis-padding-left-small puis-padding-right-small']//div[@class='a-section a-spacing-none a-spacing-top-micro s-title-instructions-style']//h2[@class='a-size-mini a-spacing-none a-color-base s-line-clamp-2']//a[@class='a-link-normal s-underline-text s-underline-link-text s-link-style a-text-normal']")));
-        productselect.click();
+        productSelect.click();
         WebElement expectedDeliverLocationLabel = new WebDriverWait(webdriver, Duration.ofSeconds(10))
                 .until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//span[@id='glow-ingress-line2']")));
         WebElement DeliverToLocation = new WebDriverWait(webdriver, Duration.ofSeconds(10))
