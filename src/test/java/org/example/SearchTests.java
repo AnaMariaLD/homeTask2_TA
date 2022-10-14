@@ -1,25 +1,15 @@
 package org.example;
 
-import org.example.pageobject.pages.CategoryPage;
 import org.example.pageobject.pages.HomePage;
 import org.example.pageobject.pages.SearchPage;
-import org.openqa.selenium.By;
-import org.openqa.selenium.Keys;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
-import org.testng.annotations.AfterMethod;
 import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-import java.time.Duration;
-import java.util.List;
-
-import static org.apache.commons.lang3.StringUtils.containsIgnoreCase;
-
 public class SearchTests extends BaseTests {
+    private SearchPage searchPage;
+    private final String validSearchPhrase ="laptop";
 
     @BeforeMethod
     public void setUp() {
@@ -31,7 +21,6 @@ public class SearchTests extends BaseTests {
         quit();
     }
 
-    private WebElement searchField;
 
     private SearchPage enterSearchPhrase(String searchPhrase) {
         HomePage homePage = new HomePage(driver);
@@ -39,36 +28,25 @@ public class SearchTests extends BaseTests {
     }
 
     @Test
-    public void searchResultsIncorrectInformation() {
-        SearchPage searchPage = enterSearchPhrase("a,smnfkjehriirjkjfnkjcnk90039034854tuihdfkjdfjnknjse!!@#$%^&(*&^%$#@#$%^&*^%$#@kflnvmoashgsdkjfnlkejnskld");
-        WebElement noResultsMessage = new WebDriverWait(driver, Duration.ofSeconds(10))
-                .until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[text()='No results for ']")));
-        Assert.assertEquals(noResultsMessage.getText(), "No results for",
-                "Somehow you got some results");
+    public void checkNoResultsMessage() {
+        String invalidSearchPhrase = "a,smnfkjehriirjkjfnkjcnk90039034854tuihdfkjdfjnknjse!!@#$%^&(*&^%$#@#$%^&*^%$#@kflnvmoashgsdkjfnlkejnskld";
+        searchPage = enterSearchPhrase(invalidSearchPhrase);
+        Assert.assertEquals(searchPage.getNoResultsMessage(), "No results for",
+                "No results message is not as expected");
     }
 
     @Test
-    public void checkResultsForMessage(){
-        SearchPage searchPage = enterSearchPhrase("laptop");
-        WebElement resultsForMessage = new WebDriverWait(driver, Duration.ofSeconds(10))
-                .until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//span[text()='\"laptop\"']")));
-        Assert.assertEquals(resultsForMessage.getText(),"\"laptop\"",
+    public void checkResultsForMessage() {
+        searchPage = enterSearchPhrase(validSearchPhrase);
+        Assert.assertEquals(searchPage.checkResultsForPhrase(), "\"" + validSearchPhrase +"\"",
                 "Results and search are not matching");
     }
 
     @Test
-    public void checkResultsList(){
-        SearchPage searchPage = enterSearchPhrase("laptop");
-        List<WebElement> searchResults = new WebDriverWait(driver, Duration.ofSeconds(10))
-                .until(ExpectedConditions.visibilityOfAllElementsLocatedBy(By.className("a-size-medium")));
-        boolean foundResult=false;
-        for (WebElement searchResult: searchResults) {
-            if(containsIgnoreCase(searchResult.getText(),"laptop")) {
-                foundResult = true;
-                break;
-            }
-        }
-        Assert.assertTrue(foundResult,"No results found containing searched text");
+    public void checkResultsList() {
+        searchPage = enterSearchPhrase(validSearchPhrase);
+        Assert.assertTrue(searchPage.checkAnyMatchForResults(validSearchPhrase),
+                "No results found containing searched text");
     }
 
 

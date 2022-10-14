@@ -1,10 +1,16 @@
 package org.example;
 
 import com.google.common.collect.Ordering;
+import org.example.pageobject.pages.CategoryPage;
+import org.example.pageobject.pages.HomePage;
+import org.example.utils.SupportMethods;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import org.testng.Assert;
+import org.testng.annotations.AfterTest;
+import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import javax.annotation.Nullable;
@@ -13,43 +19,47 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.stream.Collectors;
 
 import static org.testng.Assert.assertTrue;
 
 public class FilterAndSearchTests extends BaseTests {
-    private static final int INDEX_TO_BE_REMOVED = 14;
     private final int RESULT_PER_PAGE = 35;
+
+    private CategoryPage categoryPage;
+
+    @BeforeMethod
+    public void setUp() {
+        setUpDriver();
+    }
+
+    @AfterTest
+    public void tearDown() {
+        quit();
+    }
 
     private static void checkNumberInRange(int min, int max, Integer integer) {
         assertTrue(integer >= min && integer <= max, String.format("Value %s not in range.", integer));
     }
 
+    private CategoryPage clickCategory() {
+        HomePage homePage = new HomePage(driver);
+        return homePage.goToCategory();
+    }
+
     @Test
     public void checkBrandTitle() {
-        WebElement category = driver.findElement(By.linkText("Computer mice"));
-        category.click();
-        WebElement brandCheckBox = new WebDriverWait(driver, Duration.ofSeconds(10))
-                .until(ExpectedConditions.visibilityOfElementLocated(By.xpath("(//div[contains(@class,'a-checkbox')])[2]")));
-        brandCheckBox.click();
-        String brandName = driver.findElement(By.xpath("(//div[contains(@class,'a-checkbox')])[2]/following-sibling::span"))
-                .getText();
-        List<String> results = driver.findElements(By.xpath("//h2[contains(@class, 'a-size-mini')]/a/span"))
-                .stream()
-                .map(WebElement::getText)
-                .filter(this::isNotEmptyString)
-                .collect(Collectors.toList());
-        /**
-         * result was of brand selected,but did not contain brand name in the title
-         */
-        results.remove(INDEX_TO_BE_REMOVED);
-        results.forEach(result -> assertTrue(result.contains(brandName), "Results did not all match the brand selected"));
+        categoryPage = clickCategory();
+        categoryPage.clickOnBrand();
+        String brandName = categoryPage.getBrandTitle();
+        Assert.assertTrue(categoryPage.checkAllResultsTitlesMatchBrand(brandName),
+                "Results did not all match the brand selected");
     }
 
     @Test
     public void checkPriceRange() {
         final int min = 25;
         final int max = 35;
+        SupportMethods supportMethods = new SupportMethods();
 
         WebElement category = driver.findElement(By.linkText("Keyboards"));
         category.click();
@@ -65,14 +75,11 @@ public class FilterAndSearchTests extends BaseTests {
 
         List<WebElement> pricesCheckRange = driver.findElements(By.xpath("//span[@class='a-price-whole']"));
         List<Integer> priceCheck = new ArrayList<>();
-        pricesCheckRange.stream().filter(price -> isNotEmptyString(price.getText())).forEach(price -> priceCheck.add(Integer.valueOf(price.getText())));
+        pricesCheckRange.stream().filter(price -> supportMethods.isNotEmptyString(price.getText())).forEach(price -> priceCheck.add(Integer.valueOf(price.getText())));
 
         priceCheck.stream().filter(price -> price != 0).forEach(price -> checkNumberInRange(min, max, price));
     }
 
-    private boolean isNotEmptyString(String string) {
-        return !string.isEmpty();
-    }
 
     @Test
     public void sortingFunction(){
