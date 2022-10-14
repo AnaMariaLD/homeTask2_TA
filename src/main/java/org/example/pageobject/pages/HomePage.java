@@ -9,7 +9,7 @@ import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
-import java.time.Duration;
+
 
 public class HomePage extends BasePage {
 
@@ -22,7 +22,7 @@ public class HomePage extends BasePage {
     }
 
     public SearchPage search(String text){
-        searchField = new WebDriverWait(driver, Duration.ofSeconds(5))
+        searchField = new WebDriverWait(driver, SHORT_WAIT)
                 .until(ExpectedConditions.visibilityOfElementLocated(By.id("twotabsearchtextbox")));
         searchField.sendKeys(text + Keys.ENTER);
         return new SearchPage(driver);
