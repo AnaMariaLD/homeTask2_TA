@@ -1,10 +1,13 @@
 package org.example.pageobject.pages;
 
 import org.example.pageobject.BasePage;
+import org.example.utils.SupportMethods;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.util.List;
 
@@ -18,12 +21,23 @@ public class CategoryPage extends BasePage {
     private final By brandName = By.cssSelector(".a-size-base.a-color-base.a-text-bold");
     @FindBy (xpath = "//div[contains(@class, 's-title-instructions-style')]")
     private List<WebElement> brandResultsList;
+
+    private SupportMethods supportMethods = new SupportMethods();
+
     public CategoryPage(WebDriver driver) {
         super(driver);
     }
 
     public void clickOnBrand(){
         this.featuredBrands.findElement(brandCheckbox).click();
+
+    }
+
+    public ItemPage getOneRandomItemPage(){
+        By oneRandomItem = By.xpath("(//a[@class='a-link-normal s-no-outline'])["+4+"]");
+        WebElement item = new WebDriverWait(driver,MEDIUM_WAIT).until(ExpectedConditions.visibilityOfElementLocated(oneRandomItem));
+        item.click();
+        return new ItemPage(driver);
 
     }
 

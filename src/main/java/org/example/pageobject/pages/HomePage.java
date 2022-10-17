@@ -21,6 +21,9 @@ public class HomePage extends BasePage {
         super(driver);
     }
 
+    @FindBy (id = "nav-cart")
+    private WebElement cartButton;
+
     public SearchPage search(String text){
         searchField = new WebDriverWait(driver, SHORT_WAIT)
                 .until(ExpectedConditions.visibilityOfElementLocated(By.id("twotabsearchtextbox")));
@@ -31,5 +34,15 @@ public class HomePage extends BasePage {
     public CategoryPage goToCategory(){
         this.category.click();
         return new CategoryPage(driver);
+    }
+
+    public HomePage open(){
+        driver.get("https://www.amazon.com/");
+        return this;
+    }
+
+    public CartPage openCartPage(){
+        cartButton.click();
+        return new CartPage(driver);
     }
 }
