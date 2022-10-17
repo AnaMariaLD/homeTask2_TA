@@ -6,6 +6,7 @@ import org.example.pageobject.pages.HomePage;
 import org.example.utils.SupportMethods;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
@@ -24,7 +25,10 @@ import static org.testng.Assert.assertTrue;
 
 public class FilterAndSearchTests extends BaseTests {
     private final int RESULT_PER_PAGE = 35;
-
+    private final String minPrice = "20";
+    private final String maxPrice = "45";
+    @FindBy(css = "[aria-label='Headsets']")
+    private WebElement categorySearch;
     private CategoryPage categoryPage;
 
     @BeforeMethod
@@ -57,29 +61,10 @@ public class FilterAndSearchTests extends BaseTests {
 
     @Test
     public void checkPriceRange() {
-        final int min = 25;
-        final int max = 35;
-        SupportMethods supportMethods = new SupportMethods();
-
-        WebElement category = driver.findElement(By.linkText("Keyboards"));
-        category.click();
-
-        WebElement minPrice = driver.findElement(By.xpath("//input[@id='low-price']"));
-        minPrice.sendKeys(String.valueOf(min));
-
-        WebElement maxPrice = driver.findElement(By.xpath("//input[@id='high-price']"));
-        maxPrice.sendKeys(String.valueOf(max));
-
-        WebElement goButton = driver.findElement(By.xpath("//span[@class='a-button-inner']//input[@type='submit']"));
-        goButton.click();
-
-        List<WebElement> pricesCheckRange = driver.findElements(By.xpath("//span[@class='a-price-whole']"));
-        List<Integer> priceCheck = new ArrayList<>();
-        pricesCheckRange.stream().filter(price -> supportMethods.isNotEmptyString(price.getText())).forEach(price -> priceCheck.add(Integer.valueOf(price.getText())));
-
-        priceCheck.stream().filter(price -> price != 0).forEach(price -> checkNumberInRange(min, max, price));
+        categoryPage = clickCategory();
+        categoryPage.selectPriceRange(minPrice,maxPrice);
+        categoryPage.priceList().stream().filter(price -> price != 0).forEach(price -> checkNumberInRange(Integer.valueOf(minPrice), Integer.valueOf(maxPrice), price));
     }
-
 
     @Test
     public void sortingFunction(){

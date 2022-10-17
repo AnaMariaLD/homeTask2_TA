@@ -12,6 +12,8 @@ public class ItemPage extends BasePage {
 
     @FindBy (xpath=("//*[@id=\"add-to-cart-button\"]"))
     private WebElement addToCartButton;
+    @FindBy (xpath =( "//span[@id='glow-ingress-line2']"))
+    private WebElement deliveryLocationLabel;
 
     public ItemPage(WebDriver driver) {
         super(driver);
@@ -33,5 +35,8 @@ public class ItemPage extends BasePage {
 
         this.addToCartButton.click();
         return getItemLinkAfterAddingToCart();
+    }
+    public String getItemShippmentLocation(){
+        return deliveryLocationLabel.getText();
     }
 }

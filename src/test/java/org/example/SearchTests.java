@@ -49,5 +49,4 @@ public class SearchTests extends BaseTests {
                 "No results found containing searched text");
     }
 
-
 }

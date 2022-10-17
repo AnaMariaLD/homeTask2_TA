@@ -9,6 +9,7 @@ import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -21,6 +22,9 @@ public class CategoryPage extends BasePage {
     private final By brandName = By.cssSelector(".a-size-base.a-color-base.a-text-bold");
     @FindBy (xpath = "//div[contains(@class, 's-title-instructions-style')]")
     private List<WebElement> brandResultsList;
+    @FindBy(xpath ="//span[@class='a-price-whole']" )
+    List<WebElement> pricesCheckRange ;
+    List<Integer> priceCheck = new ArrayList<>();
 
     private SupportMethods supportMethods = new SupportMethods();
 
@@ -51,5 +55,18 @@ public class CategoryPage extends BasePage {
                 .map(WebElement::getText)
                 .allMatch(result ->result.contains(brandName));
 
+    }
+    public void selectPriceRange(String min, String max){
+       WebElement priceLowerLimit = new WebDriverWait(driver,SHORT_WAIT).until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//input[@id='low-price']")));
+       priceLowerLimit.sendKeys(min);
+        WebElement priceHigherLimit = new WebDriverWait(driver,SHORT_WAIT).until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//input[@id='high-price']")));
+       priceHigherLimit.sendKeys(max);
+       WebElement goButton = driver.findElement(By.xpath("//span[@class='a-button-inner']//input[@type='submit']"));
+       goButton.click();
+    }
+
+    public List<Integer> priceList(){
+        pricesCheckRange.stream().filter(price -> supportMethods.isNotEmptyString(price.getText())).forEach(price -> priceCheck.add(Integer.valueOf(price.getText())));
+        return priceCheck;
     }
 }
