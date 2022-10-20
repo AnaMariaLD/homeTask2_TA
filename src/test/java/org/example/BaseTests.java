@@ -1,23 +1,23 @@
 package org.example;
 
+import org.example.factory.WebDriverFactory;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.chrome.ChromeDriver;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.AfterTest;
+import org.testng.annotations.BeforeTest;
+
 
 public class BaseTests {
 
-    protected WebDriver driver;
-    @BeforeMethod
-    public void setUp() {
-        System.setProperty("webdriver.chrome.driver", "src/test/resources/webdriver/chromedriver.exe");
-        driver = new ChromeDriver();
+    protected static final WebDriver driver= new WebDriverFactory().getWebDriver();
+
+    @BeforeTest
+    public static void setUpDriver() {
         driver.get("https://www.amazon.com/");
-        driver.manage().window().fullscreen();
+        driver.manage().window().maximize();
     }
 
-    @AfterMethod
-    public void tearDown() {
+    @AfterTest
+    public static void quit() {
         driver.quit();
     }
 }
